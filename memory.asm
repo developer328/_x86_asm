@@ -7,38 +7,29 @@
 
 section .text
 
-	; now it is if_else 
-	;problem - how to print numbers?!
+	push rbp
+	mov rbp, rsp
+	sub rsp, 0x14
+	mov DWORD [rbp-4], 0
+
+	main:
+	jmp .L1	
 	
-	push rbp	; hold old rsp location
-	mov rbp, rsp	; save new rsp addres on ..^
-	sub rsp, 0x14	; 14 word for stack memory	
-	mov DWORD [rbp-8], 4	; store dec 5 on rbp-4 addr
-	mov DWORD [rbp-14], 5
-	
-	mov eax, DWORD [rbp-8]
-	cmp eax, DWORD [rbp-14]
-	jle .L2	
-	mov rax, 1	
+	.L2:
+	mov rax, 1
 	mov rdi, 1
 	mov rsi, str0
 	mov rdx, 2
-	syscall
-	int 80h
-	jmp .L3
-	.L2:
-	mov rax, 1	
-	mov rdi, 1
-	mov rsi, str1
-	mov rdx, 2
-	syscall
-	int 80h	
+	syscall	
+	add DWORD [rbp-4], 0x1
 
-	.L3:
-	;exit
-	mov rax, 60
+	.L1:
+	cmp DWORD [rbp-4], 5
+	jl .L2
+
+	mov rax, 0x3c
 	syscall
-	int 80h
+	;int 80h
 
 section .data
 	str0 db "1",0xa
